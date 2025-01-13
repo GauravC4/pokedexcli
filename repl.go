@@ -10,7 +10,19 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(cfg *config) error
+}
+
+type config struct {
+	BaseURL      string
+	NextLocation string
+	PrevLocation string
+}
+
+var cfg = config{
+	BaseURL:      "https://pokeapi.co/api/v2",
+	NextLocation: "https://pokeapi.co/api/v2/location",
+	PrevLocation: "",
 }
 
 func GetCommands() map[string]cliCommand {
@@ -25,11 +37,20 @@ func GetCommands() map[string]cliCommand {
 			description: "Display a help message",
 			callback:    commandHelp,
 		},
+		"map": {
+			name:        "map",
+			description: "display names of next 20 locations",
+			callback:    commandMapNext,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "display names of previous 20 locations",
+			callback:    commandMapBack,
+		},
 	}
 }
 
 func StartRepl() {
-
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -46,7 +67,7 @@ func StartRepl() {
 
 		command := cleanUserInputArr[0]
 		if cmd, ok := GetCommands()[command]; ok {
-			err := cmd.callback()
+			err := cmd.callback(&cfg)
 			if err != nil {
 				fmt.Printf("Error : %v\n", err)
 			}
@@ -54,7 +75,6 @@ func StartRepl() {
 			fmt.Println("Unknown command")
 			continue
 		}
-
 	}
 }
 
