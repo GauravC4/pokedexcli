@@ -54,20 +54,16 @@ func (c *Cache) Add(key string, val []byte) {
 func (c *Cache) reapLoop() {
 	ticker := time.NewTicker(c.duration)
 	go func() {
-		for {
-			select {
-			case t := <-ticker.C:
-				localTime := t.Local()
-				log.Printf("pokecache reapLoop running at %v:%v", localTime.Hour(), localTime.Second())
-				for key, entry := range c.store {
-					if time.Since(entry.createdAt) > c.duration {
-						createdAtLocalTime := entry.createdAt.Local()
-						log.Printf("pokecache reapLoop cleaning key %v created at %v:%v", key, createdAtLocalTime.Hour(), createdAtLocalTime.Second())
-						delete(c.store, key)
-					}
+		for t := range ticker.C {
+			localTime := t.Local()
+			log.Printf("pokecache reapLoop running at %v:%v", localTime.Hour(), localTime.Second())
+			for key, entry := range c.store {
+				if time.Since(entry.createdAt) > c.duration {
+					createdAtLocalTime := entry.createdAt.Local()
+					log.Printf("pokecache reapLoop cleaning key %v created at %v:%v", key, createdAtLocalTime.Hour(), createdAtLocalTime.Second())
+					delete(c.store, key)
 				}
 			}
-
 		}
 	}()
 
