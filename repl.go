@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/GauravC4/pokedexcli/internal/pokeapi"
 	"github.com/GauravC4/pokedexcli/internal/pokecache"
 )
 
@@ -21,13 +22,15 @@ type config struct {
 	NextLocation string
 	PrevLocation string
 	Cache        pokecache.Cache
+	Pokedex      pokeapi.Pokedex
 }
 
 var cfg = config{
 	BaseURL:      "https://pokeapi.co/api/v2",
 	NextLocation: "https://pokeapi.co/api/v2/location-area",
 	PrevLocation: "",
-	Cache:        pokecache.NewRedisCache(time.Minute * 5),
+	Cache:        pokecache.NewInMemoryCache(time.Minute * 5),
+	Pokedex:      pokeapi.Pokedex{},
 }
 
 func GetCommands() map[string]cliCommand {
@@ -56,6 +59,11 @@ func GetCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "Accepts 1 argument <area-name> and displays pokemon encounters in that area.",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Accepts 1 argument <pokemon-name> and tries to catch it.",
+			callback:    commandCatch,
 		},
 	}
 }
