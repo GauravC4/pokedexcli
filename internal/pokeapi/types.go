@@ -38,6 +38,7 @@ type Pokemon struct {
 			URL  string `json:"url"`
 		} `json:"type"`
 	} `json:"types"`
+	Weight int `json:"weight"`
 }
 
 type Pokedex map[string]Pokemon
