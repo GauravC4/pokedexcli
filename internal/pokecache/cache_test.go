@@ -17,8 +17,19 @@ func TestNewInMemoryCache(t *testing.T) {
 	}
 }
 
-func TestAddGet(t *testing.T) {
+func TestAddGetInMemory(t *testing.T) {
 	const interval = 5 * time.Second
+	cache := NewInMemoryCache(interval)
+	testingAddAndGet(t, cache)
+}
+
+func TestAddGetRedis(t *testing.T) {
+	const interval = 5 * time.Second
+	cache := NewRedisCache(interval)
+	testingAddAndGet(t, cache)
+}
+
+func testingAddAndGet(t *testing.T, cache Cache) {
 	cases := []struct {
 		key string
 		val []byte
@@ -35,7 +46,6 @@ func TestAddGet(t *testing.T) {
 
 	for i, c := range cases {
 		t.Run(fmt.Sprintf("Test case %v", i), func(t *testing.T) {
-			cache := NewInMemoryCache(interval)
 			cache.Add(c.key, c.val)
 			val, ok := cache.Get(c.key)
 			if !ok {
