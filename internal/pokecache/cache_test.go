@@ -6,9 +6,9 @@ import (
 	"time"
 )
 
-func TestNewCache(t *testing.T) {
+func TestNewInMemoryCache(t *testing.T) {
 	duration := time.Second * 5
-	cache := NewCache(duration)
+	cache := NewInMemoryCache(duration)
 	if cache.duration != duration {
 		t.Errorf("invalid duration allocated, expected %v got %v", duration, cache.duration)
 	}
@@ -35,7 +35,7 @@ func TestAddGet(t *testing.T) {
 
 	for i, c := range cases {
 		t.Run(fmt.Sprintf("Test case %v", i), func(t *testing.T) {
-			cache := NewCache(interval)
+			cache := NewInMemoryCache(interval)
 			cache.Add(c.key, c.val)
 			val, ok := cache.Get(c.key)
 			if !ok {
@@ -53,7 +53,7 @@ func TestAddGet(t *testing.T) {
 func TestReapLoop(t *testing.T) {
 	const baseTime = 5 * time.Millisecond
 	const waitTime = baseTime + 5*time.Millisecond
-	cache := NewCache(baseTime)
+	cache := NewInMemoryCache(baseTime)
 	cache.Add("https://example.com", []byte("testdata"))
 
 	_, ok := cache.Get("https://example.com")

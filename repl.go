@@ -20,14 +20,14 @@ type config struct {
 	BaseURL      string
 	NextLocation string
 	PrevLocation string
-	CachePtr     *(pokecache.Cache)
+	Cache        pokecache.Cache
 }
 
 var cfg = config{
 	BaseURL:      "https://pokeapi.co/api/v2",
 	NextLocation: "https://pokeapi.co/api/v2/location-area",
 	PrevLocation: "",
-	CachePtr:     pokecache.NewCache(time.Minute * 5),
+	Cache:        pokecache.NewInMemoryCache(time.Minute * 5),
 }
 
 func GetCommands() map[string]cliCommand {

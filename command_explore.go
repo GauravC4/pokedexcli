@@ -13,7 +13,7 @@ func commandExplore(cfg *config, args []string) error {
 	area := args[0]
 	address := cfg.BaseURL + "/location-area/" + area
 	exploreResp := pokeapi.ExploreResp{}
-	err := pokeapi.Http_get(address, &exploreResp, cfg.CachePtr)
+	err := pokeapi.Http_get(address, &exploreResp, cfg.Cache)
 	if err != nil {
 		return err
 	}

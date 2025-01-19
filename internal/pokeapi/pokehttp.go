@@ -10,7 +10,7 @@ import (
 	"github.com/GauravC4/pokedexcli/internal/pokecache"
 )
 
-func Http_get(address string, respPtr any, cachePtr *pokecache.Cache) error {
+func Http_get(address string, respPtr any, cache pokecache.Cache) error {
 	if _, err := url.ParseRequestURI(address); err != nil {
 		return fmt.Errorf("invalid url : %v", address)
 	}
@@ -18,8 +18,8 @@ func Http_get(address string, respPtr any, cachePtr *pokecache.Cache) error {
 	var body []byte
 	cacheHit := false
 
-	if cachePtr != nil {
-		body, cacheHit = cachePtr.Get(address)
+	if cache != nil {
+		body, cacheHit = cache.Get(address)
 	}
 	if !cacheHit {
 		res, err := http.Get(address)
@@ -34,7 +34,7 @@ func Http_get(address string, respPtr any, cachePtr *pokecache.Cache) error {
 		if res.StatusCode > 299 {
 			return fmt.Errorf("response failed with status code %v and body %s", res.StatusCode, body)
 		}
-		cachePtr.Add(address, body)
+		cache.Add(address, body)
 	}
 
 	err := json.Unmarshal(body, respPtr)

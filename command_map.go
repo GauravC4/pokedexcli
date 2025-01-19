@@ -16,7 +16,7 @@ func commandMap(cfg *config, back bool) error {
 		address = cfg.PrevLocation
 	}
 	locationResp := pokeapi.LocationResp{}
-	err := pokeapi.Http_get(address, &locationResp, cfg.CachePtr)
+	err := pokeapi.Http_get(address, &locationResp, cfg.Cache)
 	if err != nil {
 		return err
 	}
