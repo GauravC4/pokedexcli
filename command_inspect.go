@@ -8,8 +8,7 @@ func commandInspect(cfg *config, args []string) error {
 	}
 	pokemon, ok := cfg.Pokedex[args[0]]
 	if !ok {
-		fmt.Println("you have not caught that pokemon")
-		return nil
+		return fmt.Errorf("you have not caught that pokemon")
 	}
 
 	fmt.Printf("Name: %s\n", pokemon.Name)
