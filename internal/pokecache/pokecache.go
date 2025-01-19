@@ -23,7 +23,7 @@ func NewCache(duration time.Duration) *Cache {
 		store:    make(map[string]CacheEntry, 1),
 		mux:      &sync.RWMutex{},
 	}
-	cache.reapLoop()
+	go cache.reapLoop()
 	return &cache
 }
 
@@ -32,7 +32,6 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 	entry, ok := c.store[key]
 	c.mux.RUnlock()
 	if !ok {
-		//TODO: create a logger instance
 		log.Printf("pokecache Get : %v miss", key)
 		return nil, false
 	}
@@ -62,20 +61,19 @@ func (c *Cache) Add(key string, val []byte) {
 
 func (c *Cache) reapLoop() {
 	ticker := time.NewTicker(c.duration)
-	go func() {
-		for t := range ticker.C {
-			localTime := t.Local()
-			log.Printf("pokecache reapLoop running at %v:%v", localTime.Hour(), localTime.Second())
-			c.mux.Lock()
-			for key, entry := range c.store {
-				if time.Since(entry.createdAt) > c.duration {
-					createdAtLocalTime := entry.createdAt.Local()
-					log.Printf("pokecache reapLoop cleaning key %v created at %v:%v", key, createdAtLocalTime.Hour(), createdAtLocalTime.Second())
-					delete(c.store, key)
-				}
+
+	for t := range ticker.C {
+		localTime := t.Local()
+		log.Printf("pokecache reapLoop running at %v:%v", localTime.Hour(), localTime.Second())
+		c.mux.Lock()
+		for key, entry := range c.store {
+			if time.Since(entry.createdAt) > c.duration {
+				createdAtLocalTime := entry.createdAt.Local()
+				log.Printf("pokecache reapLoop cleaning key %v created at %v:%v", key, createdAtLocalTime.Hour(), createdAtLocalTime.Second())
+				delete(c.store, key)
 			}
-			c.mux.Unlock()
 		}
-	}()
+		c.mux.Unlock()
+	}
 
 }

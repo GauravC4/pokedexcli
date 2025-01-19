@@ -27,7 +27,7 @@ var cfg = config{
 	BaseURL:      "https://pokeapi.co/api/v2",
 	NextLocation: "https://pokeapi.co/api/v2/location",
 	PrevLocation: "",
-	CachePtr:     pokecache.NewCache(time.Second * 5),
+	CachePtr:     pokecache.NewCache(time.Minute * 5),
 }
 
 func GetCommands() map[string]cliCommand {
