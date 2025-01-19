@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/GauravC4/pokedexcli/internal/pokeapi"
-	"github.com/GauravC4/pokedexcli/internal/utils"
 )
 
 func commandMap(cfg *config, back bool) error {
@@ -17,7 +16,7 @@ func commandMap(cfg *config, back bool) error {
 		address = cfg.PrevLocation
 	}
 	locationResp := pokeapi.LocationResp{}
-	err := utils.Http_get(address, &locationResp)
+	err := pokeapi.Http_get(address, &locationResp, cfg.CachePtr)
 	if err != nil {
 		return err
 	}

@@ -17,14 +17,14 @@ type CacheEntry struct {
 	val       []byte
 }
 
-func NewCache(duration time.Duration) Cache {
+func NewCache(duration time.Duration) *Cache {
 	cache := Cache{
 		duration: duration,
 		store:    make(map[string]CacheEntry, 1),
 		mux:      &sync.RWMutex{},
 	}
 	cache.reapLoop()
-	return cache
+	return &cache
 }
 
 func (c *Cache) Get(key string) ([]byte, bool) {

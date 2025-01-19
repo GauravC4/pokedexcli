@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/GauravC4/pokedexcli/internal/pokecache"
 )
 
 type cliCommand struct {
@@ -17,12 +20,14 @@ type config struct {
 	BaseURL      string
 	NextLocation string
 	PrevLocation string
+	CachePtr     *(pokecache.Cache)
 }
 
 var cfg = config{
 	BaseURL:      "https://pokeapi.co/api/v2",
 	NextLocation: "https://pokeapi.co/api/v2/location",
 	PrevLocation: "",
+	CachePtr:     pokecache.NewCache(time.Second * 5),
 }
 
 func GetCommands() map[string]cliCommand {
