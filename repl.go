@@ -13,7 +13,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(cfg *config) error
+	callback    func(cfg *config, args []string) error
 }
 
 type config struct {
@@ -25,7 +25,7 @@ type config struct {
 
 var cfg = config{
 	BaseURL:      "https://pokeapi.co/api/v2",
-	NextLocation: "https://pokeapi.co/api/v2/location",
+	NextLocation: "https://pokeapi.co/api/v2/location-area",
 	PrevLocation: "",
 	CachePtr:     pokecache.NewCache(time.Minute * 5),
 }
@@ -34,23 +34,28 @@ func GetCommands() map[string]cliCommand {
 	return map[string]cliCommand{
 		"exit": {
 			name:        "exit",
-			description: "Exit the pokedex",
+			description: "Exit the pokedex.",
 			callback:    commandExit,
 		},
 		"help": {
 			name:        "help",
-			description: "Display a help message",
+			description: "Display a help message.",
 			callback:    commandHelp,
 		},
 		"map": {
 			name:        "map",
-			description: "display names of next 20 locations",
+			description: "Display names of next 20 locations.",
 			callback:    commandMapNext,
 		},
 		"mapb": {
 			name:        "mapb",
-			description: "display names of previous 20 locations",
+			description: "Display names of previous 20 locations.",
 			callback:    commandMapBack,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Accepts 1 argument <area-name> and displays pokemon encounters in that area.",
+			callback:    commandExplore,
 		},
 	}
 }
@@ -71,8 +76,9 @@ func StartRepl() {
 		}
 
 		command := cleanUserInputArr[0]
+		args := cleanUserInputArr[1:]
 		if cmd, ok := GetCommands()[command]; ok {
-			err := cmd.callback(&cfg)
+			err := cmd.callback(&cfg, args)
 			if err != nil {
 				fmt.Printf("Error : %v\n", err)
 			}

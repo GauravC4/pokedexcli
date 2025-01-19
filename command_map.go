@@ -30,10 +30,10 @@ func commandMap(cfg *config, back bool) error {
 	return nil
 }
 
-func commandMapNext(cfg *config) error {
+func commandMapNext(cfg *config, args []string) error {
 	return commandMap(cfg, false)
 }
 
-func commandMapBack(cfg *config) error {
+func commandMapBack(cfg *config, args []string) error {
 	return commandMap(cfg, true)
 }
