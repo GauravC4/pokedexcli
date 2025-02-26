@@ -38,5 +38,5 @@ Run the `pokedexcli` executable to start the REPL (Read-Eval-Print Loop) interfa
 
 ## Cache
 
-Implements inmemory cache by default with a garbage collection loop to remove expired keys.
+Implements inmemory cache by default to cache http responses from pokeapi along with a garbage collection loop to remove expired keys.
 Optionally it also has a redis implementation which can be used by invloking `NewRedisCache` function.
